@@ -1,0 +1,548 @@
+<!DOCTYPE html>
+<html lang="fr">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VigiCompte — Recueil des décisions de justice financière</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Archivo:wght@500;600;700;800&family=IBM+Plex+Mono:wght@400;500;600&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  :root{
+    --white: #ffffff;
+    --off: #fafafa;
+    --ink: #1c1c1c;
+    --grey: #6b6b6b;
+    --grey-light: #9a9a9a;
+    --line: #e6e6e4;
+    --orange: #ff6a13;
+    --orange-dark: #d4560c;
+    --orange-pale: #fff1e6;
+    --orange-pale-2: #ffe3cc;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;}
+  body{
+    background: var(--white);
+    color: var(--ink);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+  }
+
+  /* ---------- Header ---------- */
+  header{
+    background: var(--white);
+    border-bottom: 1px solid var(--line);
+    padding: 30px 24px 0;
+  }
+  .header-inner{
+    max-width: 900px;
+    margin: 0 auto;
+  }
+  .brand-row{
+    display:flex;
+    align-items:center;
+    gap: 12px;
+    margin-bottom: 18px;
+  }
+  .beacon{
+    width: 14px; height: 14px;
+    border-radius: 50%;
+    background: var(--orange);
+    box-shadow: 0 0 0 0 rgba(255,106,19,0.55);
+    animation: pulse 2.2s infinite;
+    flex-shrink:0;
+  }
+  @keyframes pulse{
+    0%   { box-shadow: 0 0 0 0 rgba(255,106,19,0.5); }
+    70%  { box-shadow: 0 0 0 10px rgba(255,106,19,0); }
+    100% { box-shadow: 0 0 0 0 rgba(255,106,19,0); }
+  }
+  @media (prefers-reduced-motion: reduce){
+    .beacon{ animation: none; }
+  }
+  h1{
+    font-family: 'Archivo', sans-serif;
+    font-weight: 800;
+    font-size: 1.5rem;
+    letter-spacing: -0.01em;
+    margin: 0;
+    color: var(--ink);
+  }
+  .tagline{
+    font-size: 1rem;
+    color: var(--grey);
+    max-width: 560px;
+    margin: 0 0 22px;
+    line-height: 1.5;
+  }
+
+  /* ---------- Country tabs ---------- */
+  .country-row{
+    display:flex;
+    align-items:center;
+    gap: 6px;
+    margin-bottom: 22px;
+  }
+  .country-tab{
+    font-family: 'IBM Plex Mono', monospace;
+    font-size: 0.78rem;
+    font-weight: 500;
+    padding: 7px 14px;
+    border-radius: 3px 3px 0 0;
+    border: 1px solid transparent;
+    cursor: default;
+    letter-spacing: 0.01em;
+  }
+  .country-tab.active{
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-bottom-color: var(--white);
+    color: var(--ink);
+    position: relative;
+    top: 1px;
+    font-weight: 600;
+  }
+  .country-tab.soon{
+    color: var(--grey-light);
+    background: var(--off);
+    border: 1px dashed var(--line);
+  }
+  .country-row::after{
+    content: "";
+    flex: 1;
+    border-bottom: 1px solid var(--line);
+    align-self: flex-end;
+  }
+
+  /* ---------- Search ---------- */
+  .search-band{
+    background: var(--white);
+    padding-bottom: 26px;
+  }
+  .search-wrap{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px;
+    display:flex;
+    gap: 8px;
+  }
+  .search-wrap input[type="text"]{
+    flex:1;
+    border: 1.5px solid var(--ink);
+    border-radius: 2px;
+    background: var(--white);
+    padding: 13px 16px;
+    font-size: 1rem;
+    font-family: 'Inter', sans-serif;
+    color: var(--ink);
+    outline: none;
+  }
+  .search-wrap input[type="text"]:focus{
+    border-color: var(--orange);
+  }
+  .search-wrap input[type="text"]::placeholder{ color: var(--grey-light); }
+  .search-btn{
+    background: var(--orange);
+    color: #fff;
+    border: 1.5px solid var(--orange);
+    padding: 0 24px;
+    font-family:'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.95rem;
+    border-radius: 2px;
+    cursor: pointer;
+    transition: background 0.15s ease;
+  }
+  .search-btn:hover{ background: var(--orange-dark); border-color: var(--orange-dark); }
+
+  main{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 22px 24px 70px;
+  }
+
+  .toolbar{
+    display:flex;
+    flex-wrap:wrap;
+    align-items:center;
+    gap: 10px 16px;
+    margin-bottom: 18px;
+    padding-bottom: 14px;
+    border-bottom: 1px solid var(--line);
+  }
+  .result-count{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.82rem;
+    color: var(--grey);
+  }
+  .result-count b{ color: var(--ink); }
+  .filters{
+    display:flex;
+    gap: 8px;
+    flex-wrap:wrap;
+    margin-left:auto;
+  }
+  select{
+    font-family:'Inter', sans-serif;
+    font-size: 0.83rem;
+    padding: 6px 10px;
+    border: 1px solid var(--line);
+    background: var(--white);
+    color: var(--ink);
+    border-radius: 2px;
+    cursor:pointer;
+  }
+  select:focus{ outline: none; border-color: var(--orange); }
+
+  /* ---------- Cards ---------- */
+  .card{
+    background: var(--white);
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--ink);
+    border-radius: 2px;
+    padding: 15px 18px;
+    margin-bottom: 10px;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+  }
+  .card:hover{
+    box-shadow: 0 2px 10px rgba(0,0,0,0.06);
+  }
+  .card.flag-condamne{ border-left-color: var(--orange); }
+  .card.flag-decharge{ border-left-color: var(--line); }
+  .card.flag-instance{ border-left-color: var(--orange-pale-2); }
+  .card.flag-autre{ border-left-color: var(--grey-light); }
+
+  .card-top{
+    display:flex;
+    justify-content:space-between;
+    align-items:flex-start;
+    gap: 12px;
+  }
+  .persons{
+    font-family:'Archivo', sans-serif;
+    font-size: 1.02rem;
+    font-weight: 700;
+    color: var(--ink);
+    line-height:1.3;
+  }
+  .ref-code{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.76rem;
+    color: var(--grey);
+    white-space:nowrap;
+    padding-top: 3px;
+  }
+  .org-line{
+    font-size: 0.9rem;
+    color: var(--grey);
+    margin-top: 3px;
+  }
+  .meta-row{
+    display:flex;
+    flex-wrap:wrap;
+    gap: 8px 14px;
+    margin-top: 10px;
+    align-items:center;
+  }
+  .badge{
+    display:inline-block;
+    font-size: 0.74rem;
+    font-weight: 700;
+    padding: 3px 10px;
+    border-radius: 2px;
+    letter-spacing:0.01em;
+    text-transform: uppercase;
+  }
+  .badge.flag-condamne{ background: var(--orange); color: #fff; }
+  .badge.flag-decharge{ background: var(--white); color: var(--grey); border: 1px solid var(--line); }
+  .badge.flag-instance{ background: var(--orange-pale); color: var(--orange-dark); }
+  .badge.flag-autre{ background: var(--off); color: var(--grey); }
+  .meta-item{
+    font-size: 0.8rem;
+    color: var(--grey);
+    font-family:'IBM Plex Mono', monospace;
+  }
+  .amount-tag{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.8rem;
+    font-weight: 700;
+    color: var(--ink);
+  }
+
+  .card-detail{
+    display:none;
+    margin-top: 13px;
+    padding-top: 13px;
+    border-top: 1px solid var(--line);
+    font-size: 0.9rem;
+    line-height: 1.55;
+  }
+  .card.open .card-detail{ display:block; }
+  .detail-grid{
+    display:grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 10px 24px;
+  }
+  @media (max-width: 560px){ .detail-grid{ grid-template-columns: 1fr; } }
+  .detail-item .label{
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.68rem;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    color: var(--orange-dark);
+    display:block;
+    margin-bottom: 2px;
+  }
+  .detail-item .value{ color: var(--ink); }
+  .infraction-box{
+    margin-top: 12px;
+    padding: 10px 12px;
+    background: var(--off);
+    border-radius: 2px;
+    color: var(--ink);
+  }
+
+  .empty-state{
+    text-align:center;
+    padding: 60px 20px;
+    color: var(--grey-light);
+  }
+  .empty-state .big{
+    font-family:'Archivo', sans-serif;
+    font-weight: 700;
+    font-size: 1.3rem;
+    color: var(--grey);
+    margin-bottom: 6px;
+  }
+
+  .disclaimer{
+    max-width: 900px;
+    margin: 0 auto;
+    padding: 0 24px 40px;
+  }
+  .disclaimer-box{
+    border: 1px solid var(--line);
+    border-left: 3px solid var(--orange);
+    border-radius: 2px;
+    padding: 16px 18px;
+    font-size: 0.85rem;
+    line-height: 1.6;
+    color: var(--grey);
+  }
+  .disclaimer-box strong{ color: var(--ink); }
+
+  footer{
+    text-align:center;
+    padding: 20px;
+    font-family:'IBM Plex Mono', monospace;
+    font-size: 0.72rem;
+    color: var(--grey-light);
+    border-top: 1px solid var(--line);
+  }
+</style>
+</head>
+<body>
+
+<header>
+  <div class="header-inner">
+    <div class="brand-row">
+      <div class="beacon"></div>
+      <h1>VigiCompte</h1>
+    </div>
+    <p class="tagline">Recueil consultable des décisions de justice financière rendues par les cours des comptes. Un outil de veille citoyenne pour la transparence de la gestion des deniers publics.</p>
+    <div class="country-row">
+      <div class="country-tab active">Gabon</div>
+      <div class="country-tab soon">+ Autres pays à venir</div>
+    </div>
+  </div>
+  <div class="search-band">
+    <div class="search-wrap">
+      <input type="text" id="searchInput" placeholder="Rechercher un nom, un organisme, une référence d'arrêt…" autocomplete="off">
+      <button class="search-btn" id="searchBtn">Rechercher</button>
+    </div>
+  </div>
+</header>
+
+<main>
+  <div class="toolbar">
+    <div class="result-count" id="resultCount">— décisions</div>
+    <div class="filters">
+      <select id="filterChambre"><option value="">Toutes les chambres</option></select>
+      <select id="filterIssue"><option value="">Toutes les issues</option></select>
+      <select id="sortBy">
+        <option value="num">Tri : n° du recueil</option>
+        <option value="date_desc">Tri : date (récent d'abord)</option>
+        <option value="date_asc">Tri : date (ancien d'abord)</option>
+        <option value="amount_desc">Tri : montant (décroissant)</option>
+      </select>
+    </div>
+  </div>
+
+  <div id="results"></div>
+  <div class="empty-state" id="emptyState" style="display:none;">
+    <div class="big">Aucune décision ne correspond</div>
+    <div>Essayez un autre nom, un autre organisme, ou effacez les filtres.</div>
+  </div>
+</main>
+
+<div class="disclaimer">
+  <div class="disclaimer-box">
+    <strong>Vocation de cet outil.</strong> VigiCompte a pour seul but de faciliter l'accès public à des décisions rendues par des juridictions financières, dans un objectif de transparence de la gestion publique. Le recueil du Gabon est disponible en premier ; d'autres pays seront ajoutés progressivement. Les mentions « condamné », « débet » ou « gestion de fait » renvoient à des qualifications juridiques prononcées par la juridiction elle-même, telles que reprises dans le recueil source — elles ne constituent pas une accusation formulée par cet outil. Certaines décisions citées peuvent avoir fait l'objet d'un appel, d'une révision ou d'une réhabilitation postérieure non reflétée ici. En cas de doute, il convient de se référer aux arrêts originaux de la juridiction concernée.
+  </div>
+</div>
+
+<footer>VigiCompte — outil de transparence civique · recueil Gabon (Cour des comptes)</footer>
+
+<script>
+const DATA = [{"N°": 1, "Référence (Répertoire/Arrêt)": "99-07/CC/PC", "Organisme contrôlé": "Assemblée Nationale", "Exercice(s)": "1995", "Personne(s) concernée(s)": "Luc BENGONE NSI (Agent comptable)", "Débet (FCFA)": null, "Amende (FCFA)": 5000000.0, "Total (FCFA)": 5000000.0, "Infraction / Nature": "Retard dans la production du compte de gestion + entrave à l'action de la Cour", "Issue": "Condamné", "Chambre": "1ère Chambre", "Date d'audience": "27/07/1998", "Pays": "Gabon"}, {"N°": 2, "Référence (Répertoire/Arrêt)": "99-40/CC/TC/3èS", "Organisme contrôlé": "Office des Postes et Télécommunications (OPT)", "Exercice(s)": "1965-1979", "Personne(s) concernée(s)": "Gaston CONIQUET", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Reddition de comptes (circonstances exceptionnelles)", "Issue": "Déchargé / quitus", "Chambre": "3ème Chambre", "Date d'audience": "07/07/1999", "Pays": "Gabon"}, {"N°": 3, "Référence (Répertoire/Arrêt)": "01/08-09/CC/QC/GC", "Organisme contrôlé": "Fonds d'Entretien Routier (FER)", "Exercice(s)": "2001", "Personne(s) concernée(s)": "Blaise ALLELA (Agent comptable)", "Débet (FCFA)": null, "Amende (FCFA)": 1700000.0, "Total (FCFA)": 1700000.0, "Infraction / Nature": "Retard dans la production du compte de gestion", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "28/10/2009", "Pays": "Gabon"}, {"N°": 4, "Référence (Répertoire/Arrêt)": "017/13-14/CC/QC/GC", "Organisme contrôlé": "Trésorier-Payeur Général", "Exercice(s)": "1980-1990", "Personne(s) concernée(s)": "Eugène CAPITO (Trésorier-Payeur Général)", "Débet (FCFA)": 114069445495.0, "Amende (FCFA)": null, "Total (FCFA)": 114069445495.0, "Infraction / Nature": "Opérations non justifiées (débet)", "Issue": "Condamné (débet)", "Chambre": "4ème Chambre", "Date d'audience": "26/02/2014", "Pays": "Gabon"}, {"N°": 5, "Référence (Répertoire/Arrêt)": "003/19-20/CC/TC/G", "Organisme contrôlé": "Trésorier-Payeur Général", "Exercice(s)": "2009", "Personne(s) concernée(s)": "Fidèle NTSISSI; Yolande OKOULATSONGO", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Prescription (délai de jugement dépassé)", "Issue": "Déchargés d'office", "Chambre": "3ème Chambre", "Date d'audience": "21/11/2019", "Pays": "Gabon"}, {"N°": 6, "Référence (Répertoire/Arrêt)": "0016/13-14/CC/QC/GC", "Organisme contrôlé": "Trésorier-Payeur Général", "Exercice(s)": "1991", "Personne(s) concernée(s)": "Jean MASSIMA (Trésorier-Payeur Général)", "Débet (FCFA)": 3358792860.0, "Amende (FCFA)": null, "Total (FCFA)": 3358792860.0, "Infraction / Nature": "Opérations non justifiées (débet)", "Issue": "Condamné (débet)", "Chambre": "4ème Chambre", "Date d'audience": "26/02/2014", "Pays": "Gabon"}, {"N°": 7, "Référence (Répertoire/Arrêt)": "01/01-02/CC/QC/GC", "Organisme contrôlé": "Conseil Gabonais des Chargeurs", "Exercice(s)": "-", "Personne(s) concernée(s)": "Emile DOUMBA", "Débet (FCFA)": 3020000000.0, "Amende (FCFA)": null, "Total (FCFA)": 3020000000.0, "Infraction / Nature": "Gestion de fait (extraction irrégulière de fonds) - jugement provisoire", "Issue": "Comptable de fait déclaré (provisoire)", "Chambre": "4ème Chambre", "Date d'audience": "13/06/2002", "Pays": "Gabon"}, {"N°": 8, "Référence (Répertoire/Arrêt)": "01/02-03/CC/QC/GC", "Organisme contrôlé": "Ministère de l'Economie, des Finances, du Budget et de la Privatisation", "Exercice(s)": "1995-1997", "Personne(s) concernée(s)": "Romain IKINDA NKOLO", "Débet (FCFA)": 5859102581.0, "Amende (FCFA)": 1500000.0, "Total (FCFA)": 5860602581.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "24/04/2003", "Pays": "Gabon"}, {"N°": 9, "Référence (Répertoire/Arrêt)": "01/07-08/CC/QC/GC", "Organisme contrôlé": "Fonds National de l'Habitat (F.N.H)", "Exercice(s)": "1994-1999", "Personne(s) concernée(s)": "Jean de Dieu MOUNGUENOU; Aloïse NDASSEBE", "Débet (FCFA)": null, "Amende (FCFA)": 10000000.0, "Total (FCFA)": 10000000.0, "Infraction / Nature": "Gestion de fait (conjointe et solidaire)", "Issue": "Condamnés (solidaires)", "Chambre": "4ème Chambre", "Date d'audience": "02/05/2007", "Pays": "Gabon"}, {"N°": 10, "Référence (Répertoire/Arrêt)": "14/11-12/CC/QC/GC", "Organisme contrôlé": "Conseil Gabonais des Chargeurs", "Exercice(s)": "1971-1999", "Personne(s) concernée(s)": "Emile DOUMBA (Ministre des Finances)", "Débet (FCFA)": 3020000000.0, "Amende (FCFA)": 56000000.0, "Total (FCFA)": 3076000000.0, "Infraction / Nature": "Gestion de fait + non-production du compte de gestion", "Issue": "Condamné (définitif)", "Chambre": "4ème Chambre", "Date d'audience": "12/01/2012", "Pays": "Gabon"}, {"N°": 11, "Référence (Répertoire/Arrêt)": "016/13-14/CC/QC/GC", "Organisme contrôlé": "Ministère du Commerce, du Développement Industriel", "Exercice(s)": "1998-2001", "Personne(s) concernée(s)": "Jean Rémy PENDY BOUYIKI", "Débet (FCFA)": 39755000.0, "Amende (FCFA)": 5000000.0, "Total (FCFA)": 44755000.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "29/05/2013", "Pays": "Gabon"}, {"N°": 12, "Référence (Répertoire/Arrêt)": "018/17-18/CC/QC/GC", "Organisme contrôlé": "La Poste S.A.", "Exercice(s)": "-", "Personne(s) concernée(s)": "Alfred MABIKA MOUYAMA (ancien PDG); Odette REMANDA; Standard Bank PLC", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Gestion de fait (cession d'actifs) - non retenue", "Issue": "Non condamnés (charges non retenues)", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 13, "Référence (Répertoire/Arrêt)": "020/17-18/CC/QC/GC", "Organisme contrôlé": "Direction Générale de la Documentation et de l'Immigration", "Exercice(s)": "2005-2013", "Personne(s) concernée(s)": "Michel ANDJEMBE (ancien DG); Lucien DEVEAU (Conseiller Financier)", "Débet (FCFA)": 104096369.0, "Amende (FCFA)": 14000000.0, "Total (FCFA)": 118096369.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamnés (solidaires débet, 7M chacun d'amende)", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 14, "Référence (Répertoire/Arrêt)": "021/17-18/CC/QC/GC", "Organisme contrôlé": "Direction Générale de la Documentation et de l'Immigration", "Exercice(s)": "2005-2013", "Personne(s) concernée(s)": "Michel ANDJEMBE (ancien DG)", "Débet (FCFA)": 1407812473.0, "Amende (FCFA)": 30000000.0, "Total (FCFA)": 1437812473.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 15, "Référence (Répertoire/Arrêt)": "022/17-18/CC/QC/G", "Organisme contrôlé": "Direction Générale de la Documentation et de l'Immigration", "Exercice(s)": "2005-2013", "Personne(s) concernée(s)": "MONDJO BOUKILA; Lucien DEVEAU", "Débet (FCFA)": 18242255818.0, "Amende (FCFA)": 60000000.0, "Total (FCFA)": 18302255818.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamnés (solidaires débet, 30M chacun d'amende)", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 16, "Référence (Répertoire/Arrêt)": "036/20-21/CC/OC/GC", "Organisme contrôlé": "Ministère de la fonction publique", "Exercice(s)": "2003-2013", "Personne(s) concernée(s)": "Guy Benjamin NDOUNOU", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Recrutement d'agents publics - charges non retenues (décédé)", "Issue": "Non condamné (charges levées)", "Chambre": "11ème Chambre", "Date d'audience": "25/03/2021", "Pays": "Gabon"}, {"N°": 17, "Référence (Répertoire/Arrêt)": "95-03/CC/PC/GC", "Organisme contrôlé": "Bourses et Stages", "Exercice(s)": "-", "Personne(s) concernée(s)": "Jean Baptiste MOTHO ELLA", "Débet (FCFA)": 400000000.0, "Amende (FCFA)": 40000000.0, "Total (FCFA)": 440000000.0, "Infraction / Nature": "Gestion de fait (mandat fictif, extraction irrégulière de fonds publics)", "Issue": "Condamné", "Chambre": "-", "Date d'audience": "26/04/1995", "Pays": "Gabon"}, {"N°": 18, "Référence (Répertoire/Arrêt)": "95-05/CC/PC", "Organisme contrôlé": "Direction Générale des Bourses et Stages (DGBS)", "Exercice(s)": "-", "Personne(s) concernée(s)": "Joseph MICKOTO", "Débet (FCFA)": 898484000.0, "Amende (FCFA)": 90000000.0, "Total (FCFA)": 988484000.0, "Infraction / Nature": "Gestion de fait (mandat fictif, extraction irrégulière de fonds publics)", "Issue": "Condamné", "Chambre": "-", "Date d'audience": "26/04/1995", "Pays": "Gabon"}, {"N°": 19, "Référence (Répertoire/Arrêt)": "99-60/CC/3èmeC", "Organisme contrôlé": "Office des Ports et Rades du Gabon (OPRAG)", "Exercice(s)": "1984-1989", "Personne(s) concernée(s)": "André BALLAND", "Débet (FCFA)": 138733813.0, "Amende (FCFA)": 26081956.0, "Total (FCFA)": 164815769.0, "Infraction / Nature": "Gestion de fait (mandat fictif)", "Issue": "Condamné", "Chambre": "3ème Chambre", "Date d'audience": "15/07/1998", "Pays": "Gabon"}, {"N°": 20, "Référence (Répertoire/Arrêt)": "02/02/03/CC/QC/GC", "Organisme contrôlé": "Ministère de la Jeunesse et des Sports (subventions football)", "Exercice(s)": "1999", "Personne(s) concernée(s)": "Jean Félix OVENGA", "Débet (FCFA)": 9114080.0, "Amende (FCFA)": 500000.0, "Total (FCFA)": 9614080.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "24/04/2003", "Pays": "Gabon"}, {"N°": 21, "Référence (Répertoire/Arrêt)": "06/09-10/CC/2C", "Organisme contrôlé": "Commune de Libreville", "Exercice(s)": "1997-2000", "Personne(s) concernée(s)": "Paul MBA ABESSOLE (Maire de Libreville)", "Débet (FCFA)": 2074461499.0, "Amende (FCFA)": 500000000.0, "Total (FCFA)": 2574461499.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "2ème Chambre", "Date d'audience": "26/10/2010", "Pays": "Gabon"}, {"N°": 22, "Référence (Répertoire/Arrêt)": "02/08-09/CC/2C/GC", "Organisme contrôlé": "Commune de Port-Gentil", "Exercice(s)": "1988-1992", "Personne(s) concernée(s)": "Pierre André RIZOMBO (Maire); Antoine ABIAGHE ANGOUE (Gouverneur)", "Débet (FCFA)": 19887524.0, "Amende (FCFA)": 9500000.0, "Total (FCFA)": 29387524.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamnés", "Chambre": "2ème Chambre", "Date d'audience": "13/11/2007", "Pays": "Gabon"}, {"N°": 23, "Référence (Répertoire/Arrêt)": "02/09-10/CC/QC/GC", "Organisme contrôlé": "Ministère des Transports et de la Marine Marchande", "Exercice(s)": "1993-1999", "Personne(s) concernée(s)": "Alfred NGUIA BANDA", "Débet (FCFA)": 25000000.0, "Amende (FCFA)": 2000000.0, "Total (FCFA)": 27000000.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "4ème Chambre", "Date d'audience": "28/10/2009", "Pays": "Gabon"}, {"N°": 24, "Référence (Répertoire/Arrêt)": "021/14-15/CC/DC", "Organisme contrôlé": "Commune de Libreville", "Exercice(s)": "1997-2000", "Personne(s) concernée(s)": "Vincent MOULENGUI BOUKOSSOU (ancien conseiller du Maire)", "Débet (FCFA)": null, "Amende (FCFA)": 26500000.0, "Total (FCFA)": 26500000.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné", "Chambre": "2ème Chambre", "Date d'audience": "11/12/2012", "Pays": "Gabon"}, {"N°": 25, "Référence (Répertoire/Arrêt)": "53/09-10/CC/CPCF/GC", "Organisme contrôlé": "Commune de Franceville", "Exercice(s)": "-", "Personne(s) concernée(s)": "Jean-Claude BALOCHE ONDIMBA (DG SOCOBA-EDTPL)", "Débet (FCFA)": 152000000.0, "Amende (FCFA)": 100000000.0, "Total (FCFA)": 252000000.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamné (société)", "Chambre": "Chambre Provinciale de Franceville", "Date d'audience": "26/07/2010", "Pays": "Gabon"}, {"N°": 26, "Référence (Répertoire/Arrêt)": "01-02/03/CC/QC/GC", "Organisme contrôlé": "Ministère de l'Economie, des Finances, du Budget et de la Privatisation", "Exercice(s)": "1995-1997", "Personne(s) concernée(s)": "Dr Pierre PIEBY OYOUBI; Dame Régine CARDOT (ENTREBAT)", "Débet (FCFA)": 19064750.0, "Amende (FCFA)": 500000.0, "Total (FCFA)": 19564750.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamnés (solidaires)", "Chambre": "4ème Chambre", "Date d'audience": "18/07/1998", "Pays": "Gabon"}, {"N°": 27, "Référence (Répertoire/Arrêt)": "012/17-18/CC/QC/GC", "Organisme contrôlé": "Audit des fêtes tournantes", "Exercice(s)": "-", "Personne(s) concernée(s)": "Entreprise SATOM GABON S.A.", "Débet (FCFA)": 20000000.0, "Amende (FCFA)": 10000000.0, "Total (FCFA)": 30000000.0, "Infraction / Nature": "Gestion de fait", "Issue": "Condamnée (société)", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 28, "Référence (Répertoire/Arrêt)": "23/2014-2015/CC/DC/GC", "Organisme contrôlé": "Commune de Koula-Moutou", "Exercice(s)": "1987", "Personne(s) concernée(s)": "Georges MADEBE (Maire); Garage ADAM et Frères", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Gestion de fait - non retenue", "Issue": "Non condamnés (charges levées)", "Chambre": "2ème Chambre", "Date d'audience": "25/03/2014", "Pays": "Gabon"}, {"N°": 29, "Référence (Répertoire/Arrêt)": "079/02-03/CC/2C", "Organisme contrôlé": "Commune de Libreville", "Exercice(s)": "1986-1994", "Personne(s) concernée(s)": "Jean Grégoire MAKUNGU", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Gestion de fait - remboursement prouvé", "Issue": "Non-lieu", "Chambre": "2ème Chambre", "Date d'audience": "17/06/2003", "Pays": "Gabon"}, {"N°": 30, "Référence (Répertoire/Arrêt)": "01/00-01CC/QC/GC", "Organisme contrôlé": "Ministère des Transports et de la Marine Marchande", "Exercice(s)": "1993-1999", "Personne(s) concernée(s)": "Alfred NGUIA BANDA (DG Marine Marchande)", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Mesures conservatoires (préalable à décision n°23)", "Issue": "Mesures conservatoires (non définitif)", "Chambre": "4ème Chambre", "Date d'audience": "15/12/2000", "Pays": "Gabon"}, {"N°": 31, "Référence (Répertoire/Arrêt)": "99-00/01/CC/PC/GC", "Organisme contrôlé": "Ambassade du Gabon en Arabie Saoudite", "Exercice(s)": "1998-1999", "Personne(s) concernée(s)": "M. KOUSSOU INAMA (Ambassadeur)", "Débet (FCFA)": 25241250.0, "Amende (FCFA)": null, "Total (FCFA)": 25241250.0, "Infraction / Nature": "Détournement de deniers publics, abus de confiance", "Issue": "Déféré à la juridiction pénale", "Chambre": "1ère Chambre", "Date d'audience": "23/12/1999", "Pays": "Gabon"}, {"N°": 32, "Référence (Répertoire/Arrêt)": "01/09-10/CC/2C", "Organisme contrôlé": "Commune de Libreville", "Exercice(s)": "1997-2000", "Personne(s) concernée(s)": "Paul MBA ABESSOLE (Maire); Pierre AMOUGHE MBA (1er Maire Adjoint)", "Débet (FCFA)": 230886293.0, "Amende (FCFA)": null, "Total (FCFA)": 230886293.0, "Infraction / Nature": "Détournement de deniers publics, faux et usage de faux, abus de confiance", "Issue": "Déférés à la juridiction pénale", "Chambre": "2ème Chambre", "Date d'audience": "13/01/2004", "Pays": "Gabon"}, {"N°": 33, "Référence (Répertoire/Arrêt)": "01/06-07/CC/PC/DS/GC", "Organisme contrôlé": "Lycée de l'Excellence de Mouila", "Exercice(s)": "2004", "Personne(s) concernée(s)": "Salomon CABINDA (Proviseur); Guy MOUSSAVOU MOMBO (Intendant)", "Débet (FCFA)": 4848000.0, "Amende (FCFA)": null, "Total (FCFA)": 4848000.0, "Infraction / Nature": "Détournement (gestion de fait solidaire)", "Issue": "Déférés à la juridiction pénale", "Chambre": "1ère Chambre", "Date d'audience": "19/06/2007", "Pays": "Gabon"}, {"N°": 34, "Référence (Répertoire/Arrêt)": "11/09-10/CC/TC/GC", "Organisme contrôlé": "Office du Chemin de Fer Transgabonais (OCTRA)", "Exercice(s)": "1990-1996", "Personne(s) concernée(s)": "Firmin Pascal IKABANGA", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Faute de gestion - non constituée", "Issue": "Non condamné", "Chambre": "3ème Chambre", "Date d'audience": "23/06/2010", "Pays": "Gabon"}, {"N°": 35, "Référence (Répertoire/Arrêt)": "06/08-09/CC/TC/GC", "Organisme contrôlé": "Commune d'Owendo", "Exercice(s)": "1997-1998", "Personne(s) concernée(s)": "Samuel MBAYE (ancien Ministre délégué)", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Faute de gestion - non constituée", "Issue": "Non condamné", "Chambre": "3ème Chambre", "Date d'audience": "16/12/2008", "Pays": "Gabon"}, {"N°": 36, "Référence (Répertoire/Arrêt)": "99-09/07/CC/SC/GC", "Organisme contrôlé": "Société des Ciments du Gabon", "Exercice(s)": "1984-1990", "Personne(s) concernée(s)": "Jean Marcel ESSOCKAMBA M'ABIRI", "Débet (FCFA)": null, "Amende (FCFA)": 30000000.0, "Total (FCFA)": 30000000.0, "Infraction / Nature": "Faute de gestion (avantages injustifiés)", "Issue": "Condamné", "Chambre": "6ème Chambre", "Date d'audience": "07/06/2000", "Pays": "Gabon"}, {"N°": 37, "Référence (Répertoire/Arrêt)": "0001/10/CC/CC/GC", "Organisme contrôlé": "Ambassade du Gabon en Arabie Saoudite", "Exercice(s)": "1992", "Personne(s) concernée(s)": "Mohamed LEFLEM (ancien Ambassadeur)", "Débet (FCFA)": null, "Amende (FCFA)": 300000.0, "Total (FCFA)": 300000.0, "Infraction / Nature": "Faute de gestion (dépassement de crédits, imputations irrégulières)", "Issue": "Condamné", "Chambre": "5ème Chambre", "Date d'audience": "29/06/2000", "Pays": "Gabon"}, {"N°": 38, "Référence (Répertoire/Arrêt)": "19/08-09/CC/TC/GC", "Organisme contrôlé": "Ministère des Finances, du Budget et des Participations", "Exercice(s)": "1995-1997", "Personne(s) concernée(s)": "Marcel DOUPAMBI MATOKA (ancien Ministre des Finances)", "Débet (FCFA)": null, "Amende (FCFA)": 9000000.0, "Total (FCFA)": 9000000.0, "Infraction / Nature": "Faute de gestion", "Issue": "Condamné", "Chambre": "3ème Chambre", "Date d'audience": "16/12/2008", "Pays": "Gabon"}, {"N°": 39, "Référence (Répertoire/Arrêt)": "02/09-10/CC/TC/GC", "Organisme contrôlé": "Assemblée Départementale de la Lolo-Bouenguidi (Koula-Moutou)", "Exercice(s)": "1981-1982", "Personne(s) concernée(s)": "Paul-Marie LISSENGUET", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Faute de gestion - prescrite", "Issue": "Non-lieu", "Chambre": "3ème Chambre", "Date d'audience": "23/06/2010", "Pays": "Gabon"}, {"N°": 40, "Référence (Répertoire/Arrêt)": "02/02-03/CC/TC/GC", "Organisme contrôlé": "Cour des comptes", "Exercice(s)": "1985-1989", "Personne(s) concernée(s)": "Dominique DEMULDER (DG Gabon Technique Service)", "Débet (FCFA)": null, "Amende (FCFA)": 2500000.0, "Total (FCFA)": 2500000.0, "Infraction / Nature": "Entrave à l'action de la Cour des comptes", "Issue": "Condamné", "Chambre": "3ème Chambre", "Date d'audience": "23/05/2003", "Pays": "Gabon"}, {"N°": 41, "Référence (Répertoire/Arrêt)": "03/03-04/CC/TC/GC", "Organisme contrôlé": "Ministère des Finances", "Exercice(s)": "1995-1997", "Personne(s) concernée(s)": "Fidèle NTISSI (DG du Budget)", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Entrave à l'action de la Cour - non retenue", "Issue": "Non condamné (condamnation provisoire levée)", "Chambre": "3ème Chambre", "Date d'audience": "26/05/2004", "Pays": "Gabon"}, {"N°": 42, "Référence (Répertoire/Arrêt)": "08/06-07/CC/TC/GC 2", "Organisme contrôlé": "Sénat", "Exercice(s)": "1997-2004", "Personne(s) concernée(s)": "Hilaire MBINA MOUSSIROU (Premier Questeur)", "Débet (FCFA)": null, "Amende (FCFA)": 1800000.0, "Total (FCFA)": 1800000.0, "Infraction / Nature": "Entrave à l'action de la Cour des comptes", "Issue": "Condamné", "Chambre": "3ème Chambre", "Date d'audience": "03/07/2007", "Pays": "Gabon"}, {"N°": 43, "Référence (Répertoire/Arrêt)": "04/09-10/CC/TC/GC", "Organisme contrôlé": "Mairie de Libreville", "Exercice(s)": "2001-2006", "Personne(s) concernée(s)": "Olivier NZEDI", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Entrave à l'action de la Cour - non constituée", "Issue": "Non condamné", "Chambre": "3ème Chambre", "Date d'audience": "17/02/2010", "Pays": "Gabon"}, {"N°": 44, "Référence (Répertoire/Arrêt)": "03/09-10/CC/TC/GC", "Organisme contrôlé": "Mairie de Libreville", "Exercice(s)": "2001-2006", "Personne(s) concernée(s)": "Jean Marie MBOUMBOU MACKANGA (Secrétaire Général)", "Débet (FCFA)": null, "Amende (FCFA)": 1500000.0, "Total (FCFA)": 1500000.0, "Infraction / Nature": "Entrave à l'action de la Cour des comptes", "Issue": "Condamné", "Chambre": "3ème Chambre", "Date d'audience": "17/02/2010", "Pays": "Gabon"}, {"N°": 45, "Référence (Répertoire/Arrêt)": "04/03-04/CC/CR/GC", "Organisme contrôlé": "AZINGO, CAN 94", "Exercice(s)": "-", "Personne(s) concernée(s)": "Henri PATURAULT AGNONYE", "Débet (FCFA)": 23904707.0, "Amende (FCFA)": null, "Total (FCFA)": 23904707.0, "Infraction / Nature": "Gestion de fait (recours en révision - montant réduit)", "Issue": "Condamné (débet réduit), amende levée", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "20/02/2004", "Pays": "Gabon"}, {"N°": 46, "Référence (Répertoire/Arrêt)": "14/08-09/CC", "Organisme contrôlé": "OPRAG", "Exercice(s)": "-", "Personne(s) concernée(s)": "Eugène LEPOUMA (Caissier)", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Gestion de fait (recours en révision - arrêt annulé)", "Issue": "Non condamné (arrêt de débet annulé)", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "22/04/2009", "Pays": "Gabon"}, {"N°": 47, "Référence (Répertoire/Arrêt)": "01/2011-2012/CC/GC", "Organisme contrôlé": "Commune de Port-Gentil", "Exercice(s)": "1991-1992", "Personne(s) concernée(s)": "Joseph OBAME ELLO (ancien Receveur percepteur)", "Débet (FCFA)": 15049327.0, "Amende (FCFA)": null, "Total (FCFA)": 15049327.0, "Infraction / Nature": "Gestion comptable (débet confirmé en révision)", "Issue": "Débet confirmé", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "14/03/2012", "Pays": "Gabon"}, {"N°": 48, "Référence (Répertoire/Arrêt)": "145/CC/CR/GC", "Organisme contrôlé": "Caisse Nationale de Sécurité Sociale (CNSS)", "Exercice(s)": "2004-2013", "Personne(s) concernée(s)": "Marie Thérèse VANE épouse NDONG OBIANG (DG CNSS)", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Gestion de fait (confirmée en révision, montant non précisé dans cet extrait)", "Issue": "Gestion de fait confirmée", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "18/03/2014", "Pays": "Gabon"}, {"N°": 49, "Référence (Répertoire/Arrêt)": "01/15-16/CC/TCh-R/GC", "Organisme contrôlé": "Investissements CAN 2012", "Exercice(s)": "-", "Personne(s) concernée(s)": "Nicolas BEYEME-NGUEMA", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Recours en révision contre arrêt provisoire de débet - irrecevable", "Issue": "Recours rejeté", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "11/11/2015", "Pays": "Gabon"}, {"N°": 50, "Référence (Répertoire/Arrêt)": "02/15-16/CC/TCh-R/GC", "Organisme contrôlé": "Office des Ports et Rades du Gabon (OPRAG)", "Exercice(s)": "1980-1990", "Personne(s) concernée(s)": "Marius FOUNGUES", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Recours en révision contre arrêts d'amende et de débet - irrecevable", "Issue": "Recours rejeté", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "11/11/2015", "Pays": "Gabon"}, {"N°": 51, "Référence (Répertoire/Arrêt)": "01/12-13/CC/QC/GC", "Organisme contrôlé": "Ministère des Finances, de l'Economie, du Budget et des Participations", "Exercice(s)": "1995-1997", "Personne(s) concernée(s)": "Antoine YALANZELE DANGOUALI", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Requête déclarée irrecevable au fond", "Issue": "Requête rejetée", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "27/12/2012", "Pays": "Gabon"}, {"N°": 52, "Référence (Répertoire/Arrêt)": "019/17-18/CC/QC/GC", "Organisme contrôlé": "Direction Générale de la Documentation et de l'Immigration", "Exercice(s)": "2005-2013", "Personne(s) concernée(s)": "Michel ANDJEMBE; Lucien DEVEAU", "Débet (FCFA)": 3332200000.0, "Amende (FCFA)": 60000000.0, "Total (FCFA)": 3392200000.0, "Infraction / Nature": "Gestion de fait (révision - montant réduit)", "Issue": "Condamnés (solidaires débet, 30M chacun d'amende)", "Chambre": "4ème Chambre", "Date d'audience": "06/02/2018", "Pays": "Gabon"}, {"N°": 53, "Référence (Répertoire/Arrêt)": "00-10/01/CC/TCR/4C", "Organisme contrôlé": "Mairie de Libreville", "Exercice(s)": "-", "Personne(s) concernée(s)": "Moussa Makan SISSOKO (Président Mutuelle des Commerçants Gabonais)", "Débet (FCFA)": null, "Amende (FCFA)": 100000.0, "Total (FCFA)": 100000.0, "Infraction / Nature": "Demande de récusation abusive (sanction procédurale)", "Issue": "Condamné (amende procédurale)", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "31/05/2000", "Pays": "Gabon"}, {"N°": 54, "Référence (Répertoire/Arrêt)": "08/06-07/CC/GC 2", "Organisme contrôlé": "Gabon Télécom-Libertis", "Exercice(s)": "-", "Personne(s) concernée(s)": "Noël BOROBO EPEMBIA; Fulbert ANDJAI; Henri André OGOUAMBA; Emile WANI; Jean-Pierre NKORI; Léopold Marius ANDJAI OSSIYI", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Demande de non-conformité des actes de privatisation - irrecevable", "Issue": "Requête rejetée (requérants)", "Chambre": "Toutes Chambres Réunies", "Date d'audience": "06/08/2007", "Pays": "Gabon"}, {"N°": 55, "Référence (Répertoire/Arrêt)": "20/08-09/CC/2C", "Organisme contrôlé": "Office des Postes et Télécommunications (OPT)", "Exercice(s)": "1985-1989", "Personne(s) concernée(s)": "Thérèse TSINGA", "Débet (FCFA)": null, "Amende (FCFA)": null, "Total (FCFA)": null, "Infraction / Nature": "Main levée de cautionnement", "Issue": "Déchargée", "Chambre": "2ème Chambre", "Date d'audience": "19/05/2009", "Pays": "Gabon"}];
+
+const FIELD = {
+  num: 'N°', ref: 'Référence (Répertoire/Arrêt)', org: 'Organisme contrôlé',
+  exercice: 'Exercice(s)', personnes: 'Personne(s) concernée(s)',
+  debet: 'Débet (FCFA)', amende: 'Amende (FCFA)', total: 'Total (FCFA)',
+  infraction: 'Infraction / Nature', issue: 'Issue', chambre: 'Chambre', date: "Date d'audience",
+  pays: 'Pays'
+};
+
+function flagClass(issue){
+  const s = issue.toLowerCase();
+  if (s.includes('condamn') || s.includes('débet confirmé') || s.includes('gestion de fait confirmée') || s.includes('déféré')) return 'flag-condamne';
+  if (s.includes('déchargé') || s.includes('non condamné') || s.includes('non-lieu') || s.includes('rejet') || s.includes('quitus') || s.includes('levée') || s.includes('levé')) return 'flag-decharge';
+  if (s.includes('provisoire') || s.includes('non définitif')) return 'flag-instance';
+  return 'flag-autre';
+}
+
+function fmtFCFA(v){
+  if (v === null || v === undefined || v === '') return null;
+  return Math.round(v).toLocaleString('fr-FR') + ' FCFA';
+}
+
+function parseDate(d){
+  if (!d || d === '-') return null;
+  const parts = d.split('/');
+  if (parts.length !== 3) return null;
+  return new Date(parseInt(parts[2]), parseInt(parts[1])-1, parseInt(parts[0]));
+}
+
+function populateFilters(){
+  const chambres = [...new Set(DATA.map(r => r[FIELD.chambre]).filter(Boolean))].sort();
+  const issues = [...new Set(DATA.map(r => r[FIELD.issue]).filter(Boolean))].sort();
+  const chSel = document.getElementById('filterChambre');
+  chambres.forEach(c => {
+    const o = document.createElement('option'); o.value = c; o.textContent = c;
+    chSel.appendChild(o);
+  });
+  const isSel = document.getElementById('filterIssue');
+  issues.forEach(i => {
+    const o = document.createElement('option'); o.value = i; o.textContent = i;
+    isSel.appendChild(o);
+  });
+}
+
+function matches(record, q){
+  if (!q) return true;
+  const hay = [
+    record[FIELD.personnes], record[FIELD.org], record[FIELD.ref],
+    record[FIELD.infraction], record[FIELD.issue], record[FIELD.chambre],
+    record[FIELD.exercice], record[FIELD.pays]
+  ].join(' ').toLowerCase();
+  return q.toLowerCase().split(/\s+/).filter(Boolean).every(term => hay.includes(term));
+}
+
+function render(){
+  const q = document.getElementById('searchInput').value.trim();
+  const chambreF = document.getElementById('filterChambre').value;
+  const issueF = document.getElementById('filterIssue').value;
+  const sortMode = document.getElementById('sortBy').value;
+
+  let rows = DATA.filter(r => matches(r, q));
+  if (chambreF) rows = rows.filter(r => r[FIELD.chambre] === chambreF);
+  if (issueF) rows = rows.filter(r => r[FIELD.issue] === issueF);
+
+  rows = rows.slice();
+  if (sortMode === 'num') rows.sort((a,b) => a[FIELD.num]-b[FIELD.num]);
+  if (sortMode === 'date_desc' || sortMode === 'date_asc'){
+    rows.sort((a,b) => {
+      const da = parseDate(a[FIELD.date]), db = parseDate(b[FIELD.date]);
+      if (!da && !db) return 0;
+      if (!da) return 1;
+      if (!db) return -1;
+      return sortMode === 'date_desc' ? db-da : da-db;
+    });
+  }
+  if (sortMode === 'amount_desc'){
+    rows.sort((a,b) => (b[FIELD.total]||0) - (a[FIELD.total]||0));
+  }
+
+  const container = document.getElementById('results');
+  const empty = document.getElementById('emptyState');
+  document.getElementById('resultCount').innerHTML =
+    '<b>' + rows.length + '</b>' + (rows.length > 1 ? ' décisions trouvées' : ' décision trouvée') + ' sur ' + DATA.length;
+
+  if (rows.length === 0){
+    container.innerHTML = '';
+    empty.style.display = 'block';
+    return;
+  }
+  empty.style.display = 'none';
+
+  container.innerHTML = rows.map(r => {
+    const fc = flagClass(r[FIELD.issue]);
+    const total = fmtFCFA(r[FIELD.total]);
+    const debet = fmtFCFA(r[FIELD.debet]);
+    const amende = fmtFCFA(r[FIELD.amende]);
+    return `
+      <div class="card ${fc}" data-num="${r[FIELD.num]}">
+        <div class="card-top">
+          <div>
+            <div class="persons">${escapeHtml(r[FIELD.personnes])}</div>
+            <div class="org-line">${escapeHtml(r[FIELD.org])}</div>
+          </div>
+          <div class="ref-code">${escapeHtml(r[FIELD.ref])}</div>
+        </div>
+        <div class="meta-row">
+          <span class="badge ${fc}">${escapeHtml(r[FIELD.issue])}</span>
+          <span class="meta-item">${escapeHtml(r[FIELD.chambre])}</span>
+          <span class="meta-item">${escapeHtml(r[FIELD.date] || '—')}</span>
+          ${total ? `<span class="amount-tag">${total}</span>` : ''}
+        </div>
+        <div class="card-detail">
+          <div class="detail-grid">
+            <div class="detail-item"><span class="label">Pays</span><span class="value">${escapeHtml(r[FIELD.pays] || '—')}</span></div>
+            <div class="detail-item"><span class="label">N° au recueil</span><span class="value">${r[FIELD.num]}</span></div>
+            <div class="detail-item"><span class="label">Exercice(s) contrôlé(s)</span><span class="value">${escapeHtml(r[FIELD.exercice] || '—')}</span></div>
+            <div class="detail-item"><span class="label">Débet prononcé</span><span class="value">${debet || '—'}</span></div>
+            <div class="detail-item"><span class="label">Amende prononcée</span><span class="value">${amende || '—'}</span></div>
+          </div>
+          <div class="infraction-box">${escapeHtml(r[FIELD.infraction])}</div>
+        </div>
+      </div>
+    `;
+  }).join('');
+
+  container.querySelectorAll('.card').forEach(card => {
+    card.addEventListener('click', () => card.classList.toggle('open'));
+  });
+}
+
+function escapeHtml(s){
+  if (s === null || s === undefined) return '';
+  return String(s)
+    .replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;')
+    .replace(/"/g,'&quot;');
+}
+
+populateFilters();
+render();
+
+document.getElementById('searchInput').addEventListener('input', render);
+document.getElementById('searchBtn').addEventListener('click', render);
+document.getElementById('filterChambre').addEventListener('change', render);
+document.getElementById('filterIssue').addEventListener('change', render);
+document.getElementById('sortBy').addEventListener('change', render);
+document.getElementById('searchInput').addEventListener('keydown', e => { if (e.key === 'Enter') render(); });
+</script>
+</body>
+</html>
